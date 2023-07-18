@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-family: "Sono", sans-serif;
+}
+
+.sigCanvas {
+  display: block;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  height: 200px;
+}
