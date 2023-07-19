@@ -1,19 +1,10 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  useContext,
-} from "react";
+import React, { useState, useLayoutEffect } from "react";
 import TextField from "@mui/material/TextField";
 import dayjs, { Dayjs } from "dayjs";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { v4 as uuid } from "uuid";
 
-import { sendGraphQLRequest } from "./serverRequests";
-import { CREATE_FORM_DATA, UPDATE_FORM_DATA } from "./queryConsts";
 import {
   Accordion,
   AccordionSummary,
@@ -28,7 +19,6 @@ import PersonalInfoComponent from "./FormSections/PersonalInfoComponent";
 import BackgroundComponent from "./FormSections/BackgroundComponent";
 import ImageGenerator from "./FormSections/ImageGenerator";
 import TermsComponent from "./FormSections/TermsComponent";
-import { AiAssistContext } from "./App";
 
 const ProposalForm = ({
   cardSubSectionData,
@@ -225,11 +215,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -283,11 +269,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -341,11 +323,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -399,11 +377,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -457,11 +431,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -515,11 +485,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -573,11 +539,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 
@@ -631,11 +593,7 @@ updates the state variables, and calls the necessary functions based on the edit
               aria-label="Section Status"
               sx={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             >
-              <ToggleButton
-                color="success"
-                value="Done"
-                sx={{ color: "grey" }}
-              >
+              <ToggleButton color="success" value="Done" sx={{ color: "grey" }}>
                 Done
               </ToggleButton>
 

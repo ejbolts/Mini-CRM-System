@@ -3,15 +3,15 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
-import dotenv from "dotenv";
 
-dotenv.config();
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const myOpenAi = new OpenAIApi(configuration);
 
-export const getOpenAIResponse = async (inputMessage) => {
+
+export const getOpenAIResponse = async (inputMessage, openai_key) => {
+  console.log("openai_key", openai_key)
+  const configuration = new Configuration({
+    apiKey: openai_key,
+  });
+  const myOpenAi = new OpenAIApi(configuration);
   const chatGptMessages = [
     {
       role: ChatCompletionRequestMessageRoleEnum.System,

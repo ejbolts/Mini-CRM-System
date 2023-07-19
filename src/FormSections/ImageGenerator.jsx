@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
+import { AiAssistContext } from "../App";
 
 function ImageGenerator({ productName, productImageURL, setProductImageURL }) {
+  const { openai_key } = useContext(AiAssistContext);
   const [loading, setLoading] = useState(false);
 
   const generateImage = async (productName) => {
@@ -11,7 +13,7 @@ function ImageGenerator({ productName, productImageURL, setProductImageURL }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ inputMessage: productName }),
+      body: JSON.stringify({ inputMessage: productName, openai_key }),
     });
 
     const responseData = await response.json();
@@ -22,10 +24,7 @@ function ImageGenerator({ productName, productImageURL, setProductImageURL }) {
   };
 
   return (
-    <div
-      className="Image Generator"
-      style={{ marginLeft: "16px" }}
-    >
+    <div className="Image Generator" style={{ marginLeft: "16px" }}>
       {loading ? (
         <div>
           <h2>Generating Image Please Wait...</h2>

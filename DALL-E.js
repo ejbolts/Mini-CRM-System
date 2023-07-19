@@ -1,13 +1,13 @@
 import { Configuration, OpenAIApi } from "openai";
-import dotenv from "dotenv";
 
-dotenv.config();
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const myOpenAi = new OpenAIApi(configuration);
 
-export const generateImage = async (productName) => {
+
+export const generateImage = async (productName, openai_key) => {
+
+  const configuration = new Configuration({
+    apiKey: openai_key,
+  });
+  const myOpenAi = new OpenAIApi(configuration);
   const response = await myOpenAi.createImage({
     prompt: `${productName}`,
     n: 1,

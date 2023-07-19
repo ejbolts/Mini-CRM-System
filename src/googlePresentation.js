@@ -17,7 +17,6 @@ const GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
   __dirname,
   "./test-project.json"
 );
-const PRESENTATION_ID = process.env.GOOGLE_PRESENTATION_ID;
 /*
  the editSlides function edits the title slide of a presentation by retrieving the presentation, finding the title element,
 preparing batch update requests to replace the title text in all slides, performing the batch update, and renaming the presentation
@@ -31,30 +30,33 @@ async function editSlides(
   newDescription,
   newProductName,
   newProductImageURL,
-  newSignatureURL
+  newSignatureURL,
+  newIntro
 ) {
   // Get the presentation
   const presentation = await slides.presentations.get({ presentationId });
 
   // Retrieve the current title from the first slide
   const firstSlide = presentation.data.slides[0];
-  const DescriptionImageAndProductNameSlide = presentation.data.slides[23];
-  const SummaryAndSignature = presentation.data.slides[1];
+  const DescriptionImageAndProductNameSlide = presentation.data.slides[1];
+  const SummaryAndSignature = presentation.data.slides[2];
 
   console.log(
     "slide 1 JSON:",
-    util.inspect(DescriptionImageAndProductNameSlide, {
+    util.inspect(SummaryAndSignature, {
       showHidden: false,
       depth: null,
     })
   );
+
+
 
   // Find the title element object withing pageElements array
   const titleElement = firstSlide.pageElements.find((element) => {
     return (
       element.shape &&
       element.shape.placeholder &&
-      element.shape.placeholder.type === "CENTERED_TITLE"
+      element.shape.placeholder.type === "TITLE"
     );
   });
 
@@ -66,63 +68,46 @@ async function editSlides(
     );
   });
 
-  const DescriptionElement =
-    DescriptionImageAndProductNameSlide.pageElements.find((element) => {
-      return (
-        element.shape &&
-        element.shape.placeholder &&
-        element.shape.placeholder.parentObjectId === "g1f27791c03d_0_186"
-      );
-    });
-
   const ProductNameElement =
     DescriptionImageAndProductNameSlide.pageElements.find((element) => {
       return (
-        element.shape &&
-        element.shape.placeholder &&
-        element.shape.placeholder.parentObjectId === "g1f27791c03d_0_185"
+        element.objectId === "g23189512096_0_165"
+      );
+    });
+
+  const DescriptionElement =
+    DescriptionImageAndProductNameSlide.pageElements.find((element) => {
+      return (
+        element.objectId === "g23189512096_0_166"
       );
     });
 
   const ProductImageElement =
     DescriptionImageAndProductNameSlide.pageElements.find((element) => {
-      return element.image && element.objectId === "g21392fc2037_0_3224";
+      return (
+        element.objectId === "g23189512096_0_172")
     });
 
   const SignatureImageElement = SummaryAndSignature.pageElements.find((element) => {
-    return element.image && element.objectId === "g21392fc2037_0_2286";
+    return (
+      element.objectId === "g23189512096_1_12")
   });
 
+  const IntroSummaryElement = SummaryAndSignature.pageElements.find(
+    (element) => {
+      return (
+        element.objectId === "g23189512096_0_144"
+      );
+    });
 
 
-  // console.log(
-  //   "slide 1 JSON:",
-  //   util.inspect(presentation.data.slides[1], {
-  //     showHidden: false,
-  //     depth: null,
-  //   })
-  // );
 
-  // if (!titleElement) {
-  //   console.log("Could not find the title element in the first slide.");
-  //   return;
-  // }
-  // if (!subtitleElement) {
-  //   console.log("Could not find the subtitle element in the first slide.");
-  //   return;
-  // }
-  // if (!DescriptionElement) {
-  //   console.log("Could not find the description element in slide.");
-  //   return;
-  // }
-  // if (!ProductNameElement) {
-  //   console.log("Could not find the ProductName element in slide.");
-  //   return;
-  // }
-  // if (!ProductImageElement) {
-  //   console.log("Could not find the ProductImage element in slide.");
-  //   return;
-  // }
+  console.log("ProductNameElement:", ProductNameElement)
+
+  console.log("DescriptionElement:", DescriptionElement)
+
+  console.log("ProductImageElement:", ProductImageElement)
+
 
   // Extract the current elements from presentation
   const currentTitle =
@@ -141,6 +126,9 @@ async function editSlides(
   const currentProductImage = ProductImageElement.image.contentUrl.trim();
 
   const currentSignatureImage = SignatureImageElement.image.contentUrl.trim();
+
+  const currentIntro =
+    IntroSummaryElement.shape.text.textElements[1].textRun.content.trim();
 
   // Prepare batch update requests array
   const requests = [];
@@ -226,29 +214,45 @@ async function editSlides(
         })
       );
     });
-    // Prepare replaceAllText request for this slide to replace the title
+
+    const intoElement = slide.pageElements.find((element) => {
+      return (
+        element.shape &&
+        element.shape.text &&
+        element.shape.text.textElements.some((textElement) => {
+          return (
+            textElement.textRun &&
+            textElement.textRun.content.includes(currentIntro)
+          );
+        })
+      );
+    });
+
+
+  }
+
+  // Prepare replaceAllText request for this slide to replace the title
+  requests.push({
+    replaceAllText: {
+      containsText: {
+        text: currentTitle,
+        matchCase: true,
+      },
+      replaceText: newTitle,
+    },
+  });
+
+  // Prepare replaceAllText request for this slide to replace the subtitle
+  if (newSubTitle && newSubTitle.length > 0) {
     requests.push({
       replaceAllText: {
         containsText: {
-          text: currentTitle,
+          text: currentSubTitle,
           matchCase: true,
         },
-        replaceText: newTitle,
+        replaceText: newSubTitle,
       },
     });
-
-    // Prepare replaceAllText request for this slide to replace the subtitle
-    if (newSubTitle && newSubTitle.length > 0) {
-      requests.push({
-        replaceAllText: {
-          containsText: {
-            text: currentSubTitle,
-            matchCase: true,
-          },
-          replaceText: newSubTitle,
-        },
-      });
-    }
   }
   console.log("currentDescription: ", currentDescription)
   console.log("newDescription: ", newDescription)
@@ -304,21 +308,39 @@ async function editSlides(
 
 
   // Prepare createImage request for this slide to create the new image
-  if (newSignatureURL.length > 0) {
-    requests.push({
-      deleteObject: {
-        objectId: SignatureImageElement.objectId,
-      },
-    });
-    requests.push({
-      createImage: {
-        url: newSignatureURL,
-        objectId: SignatureImageElement.objectId, // Use the same objectId for the new image
-        elementProperties: {
-          pageObjectId: SummaryAndSignature.objectId, // The slide where you want the image
-          size: SignatureImageElement.size, // Use the same size as the old image
-          transform: SignatureImageElement.transform, // Use the same position as the old image
+  if (newSignatureURL !== undefined) {
+    if (newSignatureURL.length > 0) {
+      requests.push({
+        deleteObject: {
+          objectId: SignatureImageElement.objectId,
         },
+      });
+      requests.push({
+        createImage: {
+          url: newSignatureURL,
+          objectId: SignatureImageElement.objectId, // Use the same objectId for the new image
+          elementProperties: {
+            pageObjectId: SummaryAndSignature.objectId, // The slide where you want the image
+            size: SignatureImageElement.size, // Use the same size as the old image
+            transform: SignatureImageElement.transform, // Use the same position as the old image
+          },
+        },
+      });
+    }
+  }
+
+
+  console.log("currentIntro: ", currentIntro);
+  console.log("newIntro: ", newIntro);
+
+  if (newIntro.length > 0) {
+    requests.push({
+      replaceAllText: {
+        containsText: {
+          text: currentIntro,
+          matchCase: true,
+        },
+        replaceText: newIntro,
       },
     });
   }
@@ -362,7 +384,9 @@ export async function initialPresentationCreation(
   newDescription,
   newProductName,
   newProductImageURL,
-  newSignatureURL
+  newSignatureURL,
+  newIntro,
+  PRESENTATION_ID
 ) {
   // Read the JSON key file
   const key = JSON.parse(fs.readFileSync(GOOGLE_APPLICATION_CREDENTIALS));
@@ -400,7 +424,8 @@ export async function initialPresentationCreation(
     newDescription,
     newProductName,
     newProductImageURL,
-    newSignatureURL
+    newSignatureURL,
+    newIntro
   );
   return NewPresentationID;
 }
@@ -415,7 +440,8 @@ export async function updatePresentation(
   newDescription,
   newProductName,
   newProductImageURL,
-  newSignatureURL
+  newSignatureURL,
+  newIntro
 ) {
   console.log("updatePresentation called with presentationId:", presentationId);
 
@@ -443,7 +469,8 @@ export async function updatePresentation(
     newDescription,
     newProductName,
     newProductImageURL,
-    newSignatureURL
+    newSignatureURL,
+    newIntro
   );
 
   console.log("Presentation updated successfully");

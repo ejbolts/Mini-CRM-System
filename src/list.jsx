@@ -277,6 +277,46 @@ card objects that include their associated subsections.
       }
     }
   };
+  async function appendCardData() {
+    const getFormDataResponse = await getCardsData(GET_FORM_DATA);
+    const getCardsResponse = await getCardsData(GET_CARDS);
+    let selectedItem = findColumnItem(selectedItemId);
+    console.log("selectedItem", selectedItem);
+
+    let formResponseData = getFormDataResponse.getFormData.find(
+      (item) => item.Item_Id === selectedItem.id
+    );
+
+    const appendData = getCardsResponse.getCards.find(
+      (item) => item.id === selectedItem.id
+    );
+
+    if (appendData) {
+      formResponseData = { ...formResponseData, ...appendData };
+    }
+
+    return formResponseData;
+  }
+
+  function updateSubSectionStatus(fields, subSectionName, statusUpdateHandler) {
+    const areAllFieldsPresent = fields.every((field) => !!field);
+    const isAnyFieldPresent = fields.some((field) => !!field);
+    let selectedItem = findColumnItem(selectedItemId);
+
+    selectedItem.subSection = selectedItem.subSection.map((subSection) => {
+      if (subSection.text === subSectionName) {
+        if (areAllFieldsPresent) {
+          subSection.status = "Done";
+          statusUpdateHandler(event, "Done");
+        } else if (isAnyFieldPresent) {
+          subSection.status = "InProgress";
+          statusUpdateHandler(event, "InProgress");
+        }
+      }
+      return subSection;
+    });
+  }
+
   /*
 the handleEdit function handles the edit action for a specific item. It fetches form data,
  sets the state variables for the form fields, updates the state for the item details, 
@@ -318,10 +358,13 @@ the handleEdit function handles the edit action for a specific item. It fetches 
               product_Name,
               product_Image_URL,
               signatureURL,
+              intro,
             } = loadItemData2;
             setCompanyDESCRIP(description);
             setProductName(product_Name);
             setProductImageURL(product_Image_URL);
+            setSignatureURL(signatureURL);
+            setIntro(intro);
           }
           console.log(loadItemData2);
         }
@@ -374,6 +417,9 @@ the handleSubmit function handles the submission of a form or card update. It up
     setAiAssistChecked,
     generateIntro,
     setGenerateIntro,
+    openai_key,
+    setSignatureCreated,
+    setOpenai_key,
   } = useContext(AiAssistContext);
   const handleSubmit = async (editMode) => {
     let newDes = companyDESCRIP; // idk why i need this here but it works
@@ -403,6 +449,8 @@ the handleSubmit function handles the submission of a form or card update. It up
     }
     try {
       let chatGPTResponse = "";
+      let chatGPTResponse2 = "";
+
       console.log("aiAssistChecked", aiAssistChecked);
       if (aiAssistChecked) {
         const response = await fetch(
@@ -412,7 +460,7 @@ the handleSubmit function handles the submission of a form or card update. It up
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ inputMessage: companyDESCRIP }),
+            body: JSON.stringify({ inputMessage: companyDESCRIP, openai_key }),
           }
         );
 
@@ -429,9 +477,13 @@ the handleSubmit function handles the submission of a form or card update. It up
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ inputMessage: companyDESCRIP }),
+            body: JSON.stringify({ inputMessage: companyDESCRIP, openai_key }),
           }
         );
+
+        const data = await response.json();
+        chatGPTResponse2 = data;
+        console.log("chatGPTResponse: ", chatGPTResponse2);
       }
       setGenerateIntro(false);
       setAiAssistChecked(false);
@@ -444,76 +496,35 @@ the handleSubmit function handles the submission of a form or card update. It up
         date: selectedItem.date,
         Presentation_Status: selectedItem.Presentation_Status,
         Presentation_Id: selectedItem.Presentation_Id,
-        description: chatGPTResponse || newDes, // newdes value is fine here
+        description: chatGPTResponse || newDes,
         product_Name: productName,
         product_Image_URL: productImageURL,
         signature_URL: signatureURL,
-        intro: intro,
+        intro: chatGPTResponse2 || intro,
       });
-      const responseData = await getCardsData(GET_FORM_DATA);
-      const responseData2 = await getCardsData(GET_CARDS);
+      const formResponseData = await appendCardData();
 
-      const PersonalInfoItemData = responseData.getFormData.find(
-        (item) => item.Item_Id === selectedItem.id
+      const {
+        first_Name,
+        last_Name,
+        email,
+        phone_Number,
+        role,
+        client_Name,
+        description,
+        product_Name,
+      } = formResponseData;
+
+      updateSubSectionStatus(
+        [first_Name, last_Name, email, phone_Number, role],
+        "Personal Info",
+        handlePersonalInfo
       );
-      let BackgroundItemData = responseData.getFormData.find(
-        (item) => item.Item_Id === selectedItem.id
+      updateSubSectionStatus(
+        [client_Name, description, product_Name],
+        "Background",
+        handleBackground
       );
-
-      const appendData = responseData2.getCards.find(
-        (item) => item.id === selectedItem.id
-      );
-      console.log("appendData", appendData);
-      if (appendData) {
-        BackgroundItemData = { ...BackgroundItemData, ...appendData };
-      }
-
-      const { first_Name, last_Name, email, phone_Number, role } =
-        PersonalInfoItemData;
-      console.log("BackgroundItemData", BackgroundItemData);
-      const { client_Name, description, product_Name } = BackgroundItemData;
-
-      // If all of these fields have non-empty value, update the status of the relevant subSection to "Done"
-      if (first_Name && last_Name && email && phone_Number && role) {
-        selectedItem.subSection = selectedItem.subSection.map((subSection) => {
-          if (subSection.text === "Personal Info") {
-            subSection.status = "Done";
-            handlePersonalInfo(event, "Done");
-          }
-          return subSection;
-        });
-      } else if (first_Name || last_Name || email || phone_Number || role) {
-        // If any of these fields have non-empty value, update the status of the relevant subSection to "In Progress"
-        selectedItem.subSection = selectedItem.subSection.map((subSection) => {
-          if (subSection.text === "Personal Info") {
-            subSection.status = "InProgress";
-            handlePersonalInfo(event, "InProgress");
-          }
-          return subSection;
-        });
-      }
-
-      // If all of these fields have non-empty value, update the status of the relevant subSection to "Done"
-
-      if (client_Name && description && product_Name) {
-        selectedItem.subSection = selectedItem.subSection.map((subSection) => {
-          if (subSection.text === "Background") {
-            subSection.status = "Done";
-            handleBackground(event, "Done");
-          }
-          return subSection;
-        });
-      } else if (client_Name || description || product_Name) {
-        // dont actually use First name here
-        // If any of these fields have non-empty value, update the status of the relevant subSection to "In Progress"
-        selectedItem.subSection = selectedItem.subSection.map((subSection) => {
-          if (subSection.text === "Background") {
-            subSection.status = "InProgress";
-            handleBackground(event, "InProgress");
-          }
-          return subSection;
-        });
-      }
     } catch (error) {
       console.error("Error updating card:", error);
     }
@@ -590,7 +601,7 @@ the handleUpdate function handles the update of a presentation for a specific it
     const responseData = await getCardsData(GET_FORM_DATA);
     const responseData2 = await getCardsData(GET_CARDS);
 
-    let BackgroundItemData = responseData.getFormData.find(
+    let formResponseData = responseData.getFormData.find(
       (item) => item.Item_Id === selectedItem.id
     );
     const appendData = responseData2.getCards.find(
@@ -598,11 +609,11 @@ the handleUpdate function handles the update of a presentation for a specific it
     );
 
     if (appendData) {
-      BackgroundItemData = { ...BackgroundItemData, ...appendData };
+      formResponseData = { ...formResponseData, ...appendData };
     }
-    console.log("BackgroundItemData", BackgroundItemData);
+    console.log("formResponseData", formResponseData);
 
-    const { client_Name, description } = BackgroundItemData;
+    const { client_Name, description, intro } = formResponseData;
 
     // Update the presentationStatus of the found item
 
@@ -611,10 +622,9 @@ the handleUpdate function handles the update of a presentation for a specific it
         selectedItem.Presentation_Status = "loading";
         setPresentationBtn("loading");
         setPresentationBtnMessage("Updating Presentation");
-        console.log("clientName", clientName);
-        console.log("description", description);
-        console.log("productImageURL", productImageURL);
-        console.log("productName", productName);
+
+        console.log("in update presentation end point intro:", intro);
+
         const response = await fetch(
           "http://localhost:4000/update-presentation",
           {
@@ -630,6 +640,7 @@ the handleUpdate function handles the update of a presentation for a specific it
               newProductName: productName,
               newProductImageURL: productImageURL,
               newSignatureURL: signatureURL,
+              newIntro: intro,
             }),
           }
         );
@@ -668,7 +679,7 @@ updates the presentation status and button state variables, sends a POST request
     const responseData = await getCardsData(GET_FORM_DATA);
     const responseData2 = await getCardsData(GET_CARDS);
 
-    let BackgroundItemData = responseData.getFormData.find(
+    let formResponseData = responseData.getFormData.find(
       (item) => item.Item_Id === selectedItem.id
     );
     const appendData = responseData2.getCards.find(
@@ -676,10 +687,11 @@ updates the presentation status and button state variables, sends a POST request
     );
 
     if (appendData) {
-      BackgroundItemData = { ...BackgroundItemData, ...appendData };
+      formResponseData = { ...formResponseData, ...appendData };
     }
+    console.log("formResponseData", formResponseData);
 
-    const { client_Name, description } = BackgroundItemData;
+    const { client_Name, description, intro } = formResponseData;
 
     // Update the presentationStatus of the found item
     selectedItem.Presentation_Status = "loading";
@@ -687,6 +699,8 @@ updates the presentation status and button state variables, sends a POST request
     setPresentationBtnMessage("Creating Presentation");
 
     try {
+      let PRESENTATION_ID = "1BQmwmL0Pxc68ms2a4nUXAyCPpPLLedatioC--ASOe14";
+
       // Call the new route to create and duplicate the presentation
       // waits for the response from the server endpoint
 
@@ -705,6 +719,8 @@ updates the presentation status and button state variables, sends a POST request
             newProductName: productName,
             newProductImageURL: productImageURL,
             newSignatureURL: signatureURL,
+            newIntro: intro,
+            NewPresentationID: PRESENTATION_ID,
           }),
         }
       );
@@ -713,9 +729,13 @@ updates the presentation status and button state variables, sends a POST request
         selectedItem.Presentation_Status = "create";
         setPresentationBtn("create");
         setPresentationBtnMessage("Create Presentation");
-        alert(
-          "Failed to create presentation check server logs for more details"
-        );
+
+        console.log("PRESENTATION_ID", PRESENTATION_ID);
+        if (PRESENTATION_ID === null) {
+          // User cancelled the prompt. Handle this situation as you see fit.
+          console.error(`Error creating presentation: ${response.status}`);
+          throw new Error(`Error creating presentation: ${response.status}`);
+        }
         throw new Error(`Error creating presentation: ${response.status}`);
       }
 

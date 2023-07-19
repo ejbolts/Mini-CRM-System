@@ -42,6 +42,8 @@ export default function BackgroundComponent({
     setAiAssistChecked,
     generateIntro,
     setGenerateIntro,
+    openai_key,
+    setOpenai_key,
   } = useContext(AiAssistContext);
 
   const handleCheckboxChange = (event) => {
@@ -158,6 +160,20 @@ export default function BackgroundComponent({
             Note: AI will generate an Executive Summary based off the product
             description.
           </Typography>
+          <TextField
+            label="Enter OpenAI Key"
+            variant="outlined"
+            sx={{ marginY: "10px" }}
+            fullWidth
+            InputProps={{
+              inputComponent: DebounceInputWrapper,
+              inputProps: {
+                debounceTimeout: 800,
+                onChange: (e) => setOpenai_key(e.target.value),
+                value: openai_key,
+              },
+            }}
+          />
         </Box>
 
         <BusinessSize />

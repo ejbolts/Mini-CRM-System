@@ -26,10 +26,10 @@ app.use(
 );
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: "localhost",
+  user: "root",
+  password: "cool-sql-password",
+  database: "dockersql",
   connectionLimit: 20,
 });
 
@@ -515,6 +515,8 @@ app.post("/create-and-duplicate-presentation", async (req, res) => {
   const newProductName = req.body.newProductName;
   const newProductImageURL = req.body.newProductImageURL;
   const newSignatureURL = req.body.newSignatureURL;
+  const newIntro = req.body.newIntro;
+  const PRESENTATION_ID = req.body.NewPresentationID;
 
   try {
     const NewPresentationID = await initialPresentationCreation(
@@ -524,7 +526,9 @@ app.post("/create-and-duplicate-presentation", async (req, res) => {
       newDescription,
       newProductName,
       newProductImageURL,
-      newSignatureURL
+      newSignatureURL,
+      newIntro,
+      PRESENTATION_ID
     );
     res.status(200).send({ success: true, NewPresentationID });
   } catch (error) {
@@ -547,6 +551,7 @@ app.post("/update-presentation", async (req, res) => {
   const newProductName = req.body.newProductName;
   const newProductImageURL = req.body.newProductImageURL;
   const newSignatureURL = req.body.newSignatureURL;
+  const newIntro = req.body.newIntro;
 
   try {
     await updatePresentation(
@@ -556,7 +561,8 @@ app.post("/update-presentation", async (req, res) => {
       newDescription,
       newProductName,
       newProductImageURL,
-      newSignatureURL
+      newSignatureURL,
+      newIntro
     );
 
     res.send({
@@ -606,28 +612,44 @@ app.post("/verify-login-email", async (req, res) => {
 });
 
 app.post("/get-openai-response", async (req, res) => {
-  const inputMessage = req.body.inputMessage;
-  const response = await chatgptfile.getOpenAIResponse(
-    `Generate a one paragraph description for a comapny based of this input: ${inputMessage}`
-  );
-  res.json(response);
+  try {
+
+    const inputMessage = req.body.inputMessage;
+    const openai_key = req.body.openai_key;
+    console.log("openai_key:", openai_key);
+
+    const response = await chatgptfile.getOpenAIResponse(
+      `Generate a one paragraph description for a comapny based of this input: ${inputMessage}`, openai_key
+    );
+    res.json(response);
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 
 app.post("/get-openai-Intro-response", async (req, res) => {
-  const inputMessage = req.body.inputMessage;
-  console.log("inputMessage:", inputMessage);
-  const response = await chatgptfile.getOpenAIResponse(
-    `Generate a one paragraph Executive Summary for a comapny based of this input description of the comapny: ${inputMessage}`
-  );
-  res.json(response);
+  try {
+
+    const inputMessage = req.body.inputMessage;
+    const openai_key = req.body.openai_key;
+    const response = await chatgptfile.getOpenAIResponse(
+      `Generate a one paragraph Executive Summary for a comapny based of this input description of the comapny: ${inputMessage}`, openai_key
+    );
+    res.json(response);
+
+  }
+  catch (error) {
+    console.log(error)
+  }
 });
 
 
 app.post("/get-openai-image", async (req, res) => {
   const inputMessage = req.body.inputMessage;
+  const openai_key = req.body.openai_key;
   console.log("inputMessage:", inputMessage);
-  const response = await DALL_Efile.generateImage(inputMessage);
+  const response = await DALL_Efile.generateImage(inputMessage, openai_key);
   console.log("response:", response);
   res.json(response);
 });

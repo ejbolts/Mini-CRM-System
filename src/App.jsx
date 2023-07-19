@@ -48,6 +48,8 @@ export const AiAssistContext = createContext();
 function App() {
   const [aiAssistChecked, setAiAssistChecked] = useState(false);
   const [generateIntro, setGenerateIntro] = useState(false);
+  const [openai_key, setOpenai_key] = useState("");
+
   const sigCanvas = useRef();
 
   const initialColumns = [
@@ -327,7 +329,7 @@ It also filters out any sub-sections in the card object that do not have text.
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ inputMessage: companyDESCRIP }),
+            body: JSON.stringify({ inputMessage: companyDESCRIP, openai_key }),
           }
         );
 
@@ -346,7 +348,7 @@ It also filters out any sub-sections in the card object that do not have text.
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ inputMessage: companyDESCRIP }),
+            body: JSON.stringify({ inputMessage: companyDESCRIP, openai_key }),
           }
         );
 
@@ -433,11 +435,17 @@ It also filters out any sub-sections in the card object that do not have text.
           setAiAssistChecked,
           generateIntro,
           setGenerateIntro,
+          openai_key,
+          setOpenai_key,
           sigCanvas,
         }}
       >
         <div className="App">
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <GoogleOAuthProvider
+            clientId={
+              "826287383184-1elaf69ico7rnulihs1col8c21ksvahc.apps.googleusercontent.com"
+            }
+          >
             <Header />
             <Box
               sx={{
