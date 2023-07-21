@@ -6,10 +6,10 @@ import cors from "cors";
 import {
   initialPresentationCreation,
   updatePresentation,
-} from "./googlePresentation.js";
+} from "../googlePresentation.js";
 import { OAuth2Client } from "google-auth-library";
-import * as chatgptfile from "./chatgpt.js";
-import * as DALL_Efile from "./DALL-E.js";
+import * as chatgptfile from "../chatgpt.js";
+import * as DALL_Efile from "../DALL-E.js";
 /*
 This file is responsible for creating the GraphQL server and defining the schema and resolvers and receiving requests from the endpoints.
 */
@@ -653,4 +653,3 @@ app.post("/get-openai-image", async (req, res) => {
 });
 
 app.listen(4000);
-console.log("Running a GraphQL API server at localhost:4000/graphql");
