@@ -15,7 +15,7 @@ and subsection data.
 
 export async function deleteCardData(DELETE_CARD, variables) {
   try {
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export function updateSubvaluesData(updatedSubsections, UPDATE_SUBVALUES) {
   const createUpdatedSubSectionPromises = updatedSubsections.map(
     (subSection) => {
       console.log("subSection:", subSection);
-      return fetch("http://localhost:4000/graphql", {
+      return fetch("https://mini-crm-system.vercel.app/graphql", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +68,7 @@ export async function handleCreateCardSubSection(
   CREATE_CARD_SUBSECTION
 ) {
   const createSubSectionPromises = subSectionsArray.map((subSection) => {
-    return fetch("http://localhost:4000/graphql", {
+    return fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -94,7 +94,7 @@ export async function handleCreateCardSubSection(
 export async function updateCardsPositionData(UPDATE_CARD_POSITION, variables) {
   try {
     console.log("variables:", variables);
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export async function updateCardsPositionData(UPDATE_CARD_POSITION, variables) {
 
 export async function getCardsData(GET_CARDS) {
   try {
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -135,7 +135,7 @@ export async function getCardsData(GET_CARDS) {
 
 export async function getPresentationData(GET_CARD_PRESENTATION) {
   try {
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export async function getPresentationData(GET_CARD_PRESENTATION) {
 
 export async function getCardsSubSectionData(GET_CARDS_SUBSECTIONS) {
   try {
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export async function getCardsSubSectionData(GET_CARDS_SUBSECTIONS) {
 }
 
 export async function handleCreateCard(Card, CREATE_CARD) {
-  fetch("http://localhost:4000/graphql", {
+  fetch("https://mini-crm-system.vercel.app/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -199,7 +199,7 @@ export async function handleCreateCard(Card, CREATE_CARD) {
 export async function handleCreateFormData(CREATE_FORM_DATA, variables) {
   try {
     console.log("variables:", variables);
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -221,7 +221,7 @@ export async function handleCreateFormData(CREATE_FORM_DATA, variables) {
 export const sendGraphQLRequest = async (query, variables) => {
   console.log("variables:", variables);
 
-  const response = await fetch("http://localhost:4000/graphql", {
+  const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -249,7 +249,7 @@ export async function updateCardPresentationData(
 ) {
   try {
     console.log("variables:", variables);
-    const response = await fetch("http://localhost:4000/graphql", {
+    const response = await fetch("https://mini-crm-system.vercel.app/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

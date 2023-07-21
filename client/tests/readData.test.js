@@ -23,7 +23,7 @@ test("getCardsData fetches cards correctly", async () => {
     },
   };
 
-  fetchMock.post("http://localhost:4000/graphql", {
+  fetchMock.post("https://mini-crm-system.vercel.app/graphql", {
     status: 200,
     body: JSON.stringify(mockResponse),
   });
@@ -54,7 +54,7 @@ test("getCardsSubSectionData fetches cards sub-section data correctly", async ()
     },
   };
 
-  fetchMock.post("http://localhost:4000/graphql", {
+  fetchMock.post("https://mini-crm-system.vercel.app/graphql", {
     status: 200,
     body: JSON.stringify(mockResponse),
   });

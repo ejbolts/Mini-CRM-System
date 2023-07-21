@@ -8,13 +8,16 @@ function ImageGenerator({ productName, productImageURL, setProductImageURL }) {
 
   const generateImage = async (productName) => {
     setLoading(true);
-    const response = await fetch("http://localhost:4000/get-openai-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ inputMessage: productName, openai_key }),
-    });
+    const response = await fetch(
+      "https://mini-crm-system.vercel.app/get-openai-image",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ inputMessage: productName, openai_key }),
+      }
+    );
 
     const responseData = await response.json();
     console.log("responseData:", responseData);

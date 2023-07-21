@@ -323,7 +323,7 @@ It also filters out any sub-sections in the card object that do not have text.
       let chatGPTResponse = "";
       if (aiAssistChecked) {
         const response = await fetch(
-          "http://localhost:4000/get-openai-response",
+          "https://mini-crm-system.vercel.app/get-openai-response",
           {
             method: "POST",
             headers: {
@@ -342,7 +342,7 @@ It also filters out any sub-sections in the card object that do not have text.
 
       if (generateIntro) {
         const response = await fetch(
-          "http://localhost:4000/get-openai-Intro-response",
+          "https://mini-crm-system.vercel.app/get-openai-Intro-response",
           {
             method: "POST",
             headers: {
@@ -411,13 +411,16 @@ It also filters out any sub-sections in the card object that do not have text.
     const token = credentialResponse.credential;
     console.log(token);
 
-    const response = await fetch("http://localhost:4000/verify-login-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    });
+    const response = await fetch(
+      "https://mini-crm-system.vercel.app/verify-login-email",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }
+    );
 
     const { userEmail } = await response.json();
     setUserEmail(userEmail);

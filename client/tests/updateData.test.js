@@ -22,7 +22,7 @@ test("updateSubvaluesData updates sub-section data correctly", async () => {
     },
   };
 
-  fetchMock.post("http://localhost:4000/graphql", {
+  fetchMock.post("https://mini-crm-system.vercel.app/graphql", {
     status: 200,
     body: JSON.stringify(mockResponse),
   });
@@ -63,7 +63,7 @@ test("updateCardsPositionData updates cards position correctly", async () => {
     Column_id: 2,
   };
 
-  fetchMock.post("http://localhost:4000/graphql", {
+  fetchMock.post("https://mini-crm-system.vercel.app/graphql", {
     status: 200,
     body: JSON.stringify(mockResponse),
   });
