@@ -323,7 +323,7 @@ It also filters out any sub-sections in the card object that do not have text.
       let chatGPTResponse = "";
       if (aiAssistChecked) {
         const response = await fetch(
-          "https://mini-crm-system.vercel.app/get-openai-response",
+          "https://mini-crm-express-server.onrender.com/get-openai-response",
           {
             method: "POST",
             headers: {
@@ -342,7 +342,7 @@ It also filters out any sub-sections in the card object that do not have text.
 
       if (generateIntro) {
         const response = await fetch(
-          "https://mini-crm-system.vercel.app/get-openai-Intro-response",
+          "https://mini-crm-express-server.onrender.com/get-openai-Intro-response",
           {
             method: "POST",
             headers: {
@@ -412,7 +412,7 @@ It also filters out any sub-sections in the card object that do not have text.
     console.log(token);
 
     const response = await fetch(
-      "https://mini-crm-system.vercel.app/verify-login-email",
+      "https://mini-crm-express-server.onrender.com/verify-login-email",
       {
         method: "POST",
         headers: {

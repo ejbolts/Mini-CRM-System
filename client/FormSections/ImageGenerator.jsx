@@ -9,7 +9,7 @@ function ImageGenerator({ productName, productImageURL, setProductImageURL }) {
   const generateImage = async (productName) => {
     setLoading(true);
     const response = await fetch(
-      "https://mini-crm-system.vercel.app/get-openai-image",
+      "https://mini-crm-express-server.onrender.com/get-openai-image",
       {
         method: "POST",
         headers: {

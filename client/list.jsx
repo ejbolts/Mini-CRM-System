@@ -454,7 +454,7 @@ the handleSubmit function handles the submission of a form or card update. It up
       console.log("aiAssistChecked", aiAssistChecked);
       if (aiAssistChecked) {
         const response = await fetch(
-          "https://mini-crm-system.vercel.app/get-openai-response",
+          "https://mini-crm-express-server.onrender.com/get-openai-response",
           {
             method: "POST",
             headers: {
@@ -471,7 +471,7 @@ the handleSubmit function handles the submission of a form or card update. It up
 
       if (generateIntro) {
         const response = await fetch(
-          "https://mini-crm-system.vercel.app/get-openai-Intro-response",
+          "https://mini-crm-express-server.onrender.com/get-openai-Intro-response",
           {
             method: "POST",
             headers: {
@@ -626,7 +626,7 @@ the handleUpdate function handles the update of a presentation for a specific it
         console.log("in update presentation end point intro:", intro);
 
         const response = await fetch(
-          "https://mini-crm-system.vercel.app/update-presentation",
+          "https://mini-crm-express-server.onrender.com/update-presentation",
           {
             method: "POST",
             headers: {
@@ -705,7 +705,7 @@ updates the presentation status and button state variables, sends a POST request
       // waits for the response from the server endpoint
 
       const response = await fetch(
-        "https://mini-crm-system.vercel.app/create-and-duplicate-presentation",
+        "https://mini-crm-express-server.onrender.com/create-and-duplicate-presentation",
         {
           method: "POST",
           headers: {
