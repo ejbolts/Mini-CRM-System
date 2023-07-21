@@ -653,3 +653,4 @@ app.post("/get-openai-image", async (req, res) => {
 });
 
 app.listen(4000);
+console.log("Running Express API server")
