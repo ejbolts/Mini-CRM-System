@@ -17,7 +17,7 @@ This file is responsible for creating the GraphQL server and defining the schema
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://mini-crm-system-k4ex.vercel.app/",
     credentials: true,
   }),
   express.json()
