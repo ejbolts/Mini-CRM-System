@@ -7,7 +7,7 @@ import { useState, createContext, useRef } from "react";
 import Box from "@mui/material/Box";
 import ProposalModal from "./ProposalModal";
 import { v4 as uuid } from "uuid";
-import GoogleLogo from "../images/google-icon.svg";
+import GoogleLogo from "./images/google-icon.svg";
 import {
   handleCreateCardSubSection,
   handleCreateCard,

@@ -3,11 +3,10 @@ import { createHandler } from "graphql-http/lib/use/express";
 import { buildSchema } from "graphql";
 import mysql from "mysql2";
 import cors from "cors";
-import dotenv from "dotenv";
 import {
   initialPresentationCreation,
   updatePresentation,
-} from "./src/googlePresentation.js";
+} from "./googlePresentation.js";
 import { OAuth2Client } from "google-auth-library";
 import * as chatgptfile from "./chatgpt.js";
 import * as DALL_Efile from "./DALL-E.js";
@@ -15,7 +14,6 @@ import * as DALL_Efile from "./DALL-E.js";
 This file is responsible for creating the GraphQL server and defining the schema and resolvers and receiving requests from the endpoints.
 */
 
-dotenv.config();
 const app = express();
 app.use(
   cors({

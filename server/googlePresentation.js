@@ -17,6 +17,16 @@ const GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
   __dirname,
   "./test-project.json"
 );
+
+// const key2 = JSON.parse(fs.readFileSync(GOOGLE_APPLICATION_CREDENTIALS));
+// key2.private_key = process.env.GOOGLE_SERVICE_PRIVATE_KEY;
+// let cleanedString = process.env.GOOGLE_SERVICE_ACCOUNT.replace(/\\n|\\/g, '');
+// const key = JSON.parse(cleanedString);
+// const PK = process.env.GOOGLE_SERVICE_PRIVATE_KEY;
+// key.private_key = PK
+
+
+
 /*
  the editSlides function edits the title slide of a presentation by retrieving the presentation, finding the title element,
 preparing batch update requests to replace the title text in all slides, performing the batch update, and renaming the presentation
