@@ -10,6 +10,9 @@ import {
 import { OAuth2Client } from "google-auth-library";
 import * as chatgptfile from "./chatgpt.js";
 import * as DALL_Efile from "./DALL-E.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 /*
 This file is responsible for creating the GraphQL server and defining the schema and resolvers and receiving requests from the endpoints.
 */
@@ -24,10 +27,10 @@ app.use(
 );
 
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "cool-sql-password",
-  database: "dockersql",
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USERNAME,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
   connectionLimit: 20,
 });
 
